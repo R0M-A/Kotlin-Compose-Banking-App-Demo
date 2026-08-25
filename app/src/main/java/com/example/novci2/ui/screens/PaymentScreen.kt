@@ -30,6 +30,7 @@ import com.example.novci2.ui.components.BalanceCard
 import com.example.novci2.ui.components.Header
 import com.example.novci2.ui.components.Ponisti
 import com.example.novci2.ui.components.Potvrdi
+import com.example.novci2.util.toCents
 import java.math.BigInteger
 
 @Composable
@@ -89,13 +90,3 @@ fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (B
             suffix = { Text("€", color = Color.White, fontSize = 48.sp) })
     }
 }
-
-private fun String.toCents(): BigInteger {
-    return if (isEmpty()) {
-        BigInteger.ZERO
-    } else {
-        toBigDecimal().movePointRight(2).toBigIntegerExact()
-    }
-}
-
-// TODO: Make Money class that has normalized cents and euros getters. Also easier to use it as a type than plain Int. Maybe make it do the conversion too.
