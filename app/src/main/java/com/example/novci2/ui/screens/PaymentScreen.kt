@@ -12,8 +12,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -24,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,11 +30,12 @@ import com.example.novci2.ui.components.BalanceCard
 import com.example.novci2.ui.components.Header
 import com.example.novci2.ui.components.Ponisti
 import com.example.novci2.ui.components.Potvrdi
+import java.math.BigInteger
 
 @Composable
-fun PaymentScreen(balanceCents: Int, onConfirm: (Long) -> Unit, onBack: () -> Unit) {
+fun PaymentScreen(balanceCents: Int, onConfirm: (BigInteger) -> Unit, onBack: () -> Unit) {
 
-    var enteredCents by rememberSaveable { mutableLongStateOf(0L) }
+    var enteredCents by rememberSaveable { mutableStateOf(BigInteger.ZERO) }
 
     Box(
         Modifier
@@ -62,9 +62,8 @@ fun PaymentScreen(balanceCents: Int, onConfirm: (Long) -> Unit, onBack: () -> Un
 }
 
 private val moneyPattern = Regex("^(0|[1-9]\\d*)?(\\.\\d{0,2})?$")
-
 @Composable
-fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (Long) -> Unit) {
+fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (BigInteger) -> Unit) {
     Column(modifier, verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
 
         Text("Enter Amount", Modifier.padding(bottom = 8.dp), Color.Gray, fontSize = 16.sp)
@@ -91,13 +90,12 @@ fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (L
     }
 }
 
-private fun String.toCents(): Long {
+private fun String.toCents(): BigInteger {
     return if (isEmpty()) {
-        0L
+        BigInteger.ZERO
     } else {
-        toBigDecimal().movePointRight(2).toLong()
+        toBigDecimal().movePointRight(2).toBigIntegerExact()
     }
 }
 
-// TODO: Use BigNumbers, maybe unsigned to avoid any kind of overflow, also leading 0 breaks :D
 // TODO: Make Money class that has normalized cents and euros getters. Also easier to use it as a type than plain Int. Maybe make it do the conversion too.
