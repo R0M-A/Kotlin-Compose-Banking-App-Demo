@@ -12,7 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -36,9 +37,11 @@ fun PaymentScreen(balanceCents: Int, onConfirm: (Long) -> Unit, onBack: () -> Un
 
     var enteredCents by rememberSaveable { mutableLongStateOf(0L) }
 
-    Box(Modifier
-        .fillMaxSize()
-        .background(Color.Black)) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Header()
             BalanceCard(Modifier.padding(horizontal = 4.dp), balanceCents)
@@ -58,25 +61,29 @@ fun PaymentScreen(balanceCents: Int, onConfirm: (Long) -> Unit, onBack: () -> Un
     }
 }
 
+private val moneyPattern = Regex("^(0|[1-9]\\d*)?(\\.\\d{0,2})?$")
+
 @Composable
 fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (Long) -> Unit) {
     Column(modifier, verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-        var enteredText by rememberSaveable { mutableStateOf("") }
 
-        Text("Enter Amount", Modifier.padding(bottom = 8.dp), Color.Gray, fontSize = 16.sp,)
+        Text("Enter Amount", Modifier.padding(bottom = 8.dp), Color.Gray, fontSize = 16.sp)
 
+        var fieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
         OutlinedTextField(
-            value = enteredText,
+            value = fieldValue,
             onValueChange = { input ->
-                val normInput = input.replace(',', '.').let { if (it == ".") "0." else it }
-                val isValid = normInput.matches(Regex("^(0|[1-9]\\d*)?(\\.\\d{0,2})?\$"))
-                if (isValid) {
-                    enteredText = normInput
-                    onEnteredCentsChange(textToCents(normInput))
+
+                var normInput = input.copy(input.text.replace(",", "."))
+                if (normInput.text == ".") normInput = normInput.copy("0.", TextRange(2))
+
+                if (moneyPattern.matches(normInput.text)) {
+                    fieldValue = normInput
+                    onEnteredCentsChange(normInput.text.toCents())
                 }
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             textStyle = TextStyle(fontSize = 48.sp, textAlign = TextAlign.Center),
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("0.00", Modifier.alpha(.5f), textAlign = TextAlign.Center) },
@@ -84,18 +91,13 @@ fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (L
     }
 }
 
-// TODO: Use BigNumbers, maybe unsigned to avoid any kind of overflow
-// TODO: Make Money class that has normalized cents and euros getters. Also easier to use it as a type than plain Int. Maybe make it do the conversion too.
-private fun textToCents(text: String): Long {
-    if (text.isEmpty() || text == ".") return 0L
-    val parts = text.split(".")
-
-    val euros = parts[0].ifEmpty { "0" }.toLong()
-    val cents = parts
-        .getOrElse(1, {"0"})
-        .padEnd(2, '0')
-        .take(2)
-        .toLong()
-
-    return euros * 100L + cents
+private fun String.toCents(): Long {
+    return if (isEmpty()) {
+        0L
+    } else {
+        toBigDecimal().movePointRight(2).toLong()
+    }
 }
+
+// TODO: Use BigNumbers, maybe unsigned to avoid any kind of overflow, also leading 0 breaks :D
+// TODO: Make Money class that has normalized cents and euros getters. Also easier to use it as a type than plain Int. Maybe make it do the conversion too.
