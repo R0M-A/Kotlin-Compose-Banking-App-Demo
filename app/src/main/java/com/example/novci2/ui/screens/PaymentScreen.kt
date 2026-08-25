@@ -34,7 +34,7 @@ import com.example.novci2.util.toCents
 import java.math.BigInteger
 
 @Composable
-fun PaymentScreen(balanceCents: Int, onConfirm: (BigInteger) -> Unit, onBack: () -> Unit) {
+fun PaymentScreen(balanceCents: BigInteger, onConfirm: (BigInteger) -> Unit, onBack: () -> Unit) {
 
     var enteredCents by rememberSaveable { mutableStateOf(BigInteger.ZERO) }
 

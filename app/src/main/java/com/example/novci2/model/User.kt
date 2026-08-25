@@ -1,11 +1,13 @@
 package com.example.novci2.model
 
+import java.math.BigInteger
+
 data class User(var prefix: String = "",
                 var firstName: String,
                 var middleName: String = "",
                 var surname: String,
                 var suffix: String = "",
-                var balanceCents: Int = 0,
+                var balanceCents: BigInteger = BigInteger.ZERO,
                 val ID: Long) {
     val fullName: String
         get() = listOf(prefix, firstName, middleName, surname, suffix).filter { it.isNotBlank() }.joinToString(" ")

@@ -14,14 +14,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.novci2.util.toMoneyString
+import java.math.BigInteger
 
 @Composable
-fun BalanceCard(modifier: Modifier = Modifier, balanceCents: Int) {
+fun BalanceCard(modifier: Modifier = Modifier, balanceCents: BigInteger) {
     Surface(modifier
         .fillMaxWidth()
         .height(100.dp), RoundedCornerShape(24.dp), Color(0xFF878093)) {
         Box(Modifier.fillMaxSize()) {
-            Text("%,.2f €".format((balanceCents / 100).toDouble()), Modifier.align(Alignment.Center), Color.White, fontSize = 34.sp, fontWeight = FontWeight.Bold)
+            Text(balanceCents.toMoneyString(), Modifier.align(Alignment.Center), Color.White, fontSize = 34.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
