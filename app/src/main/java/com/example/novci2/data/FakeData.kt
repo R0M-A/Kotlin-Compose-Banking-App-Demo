@@ -3,7 +3,6 @@ package com.example.novci2.data
 import com.example.novci2.R
 import com.example.novci2.model.TransactionRecord
 import com.example.novci2.model.User
-import java.math.BigInteger
 
 object FakeData {
     val userList = listOf(
