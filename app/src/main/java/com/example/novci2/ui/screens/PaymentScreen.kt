@@ -63,6 +63,8 @@ fun PaymentScreen(balanceCents: Int, onConfirm: (BigInteger) -> Unit, onBack: ()
 }
 
 private val moneyPattern = Regex("^(0|[1-9]\\d*)?(\\.\\d{0,2})?$")
+private val leadingZero = Regex("0[1-9]")
+
 @Composable
 fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (BigInteger) -> Unit) {
     Column(modifier, verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -76,6 +78,7 @@ fun FixedTwoDecimalInput(modifier: Modifier = Modifier, onEnteredCentsChange: (B
 
                 var normInput = input.copy(input.text.replace(",", "."))
                 if (normInput.text == ".") normInput = normInput.copy("0.", TextRange(2))
+                if (leadingZero.matches(normInput.text)) normInput = input.copy(normInput.text.takeLast(1))
 
                 if (moneyPattern.matches(normInput.text)) {
                     fieldValue = normInput
