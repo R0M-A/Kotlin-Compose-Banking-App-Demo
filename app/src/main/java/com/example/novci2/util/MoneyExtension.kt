@@ -1,6 +1,5 @@
 package com.example.novci2.util
 
-//TODO: look at android.icu.util.Currency
 import java.math.BigInteger
 import kotlin.text.toBigDecimal
 
@@ -12,6 +11,8 @@ fun String.toCents(): BigInteger {
     }
 }
 
+//TODO: look at android.icu.util.Currency
+//TODO: Localizaiton
 fun BigInteger.toMoneyString(currency: String = "€"): String {
     val amount = toBigDecimal().movePointLeft(2)
     return "%,.2f %s".format(amount, currency)
