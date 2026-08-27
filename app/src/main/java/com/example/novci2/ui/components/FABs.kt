@@ -44,6 +44,15 @@ fun Potvrdi(onClick: () -> Unit) {
 }
 
 @Composable
+fun Nastavi(onClick: () -> Unit) {
+    ExtendedFloatingActionButton(
+        { Text("Nastavi") },
+        { Icon(painterResource(R.drawable.outline_arrow_forward_24), "Nastavi dalje") },
+        { onClick() },
+    )
+}
+
+@Composable
 fun Ponisti(onClick: () -> Unit) {
     ExtendedFloatingActionButton(
         { Text("Poništi") },

@@ -19,9 +19,10 @@ import com.example.novci2.ui.components.Kartice
 import com.example.novci2.ui.components.Placanje
 import com.example.novci2.ui.components.PrimanjeNovaca
 import com.example.novci2.ui.components.TransactionList
+import java.math.BigInteger
 
 @Composable
-fun HomeScreen(balance: Int, transactions: List<TransactionRecord>, onNavigateToPayment: () -> Unit) {
+fun HomeScreen(balance: BigInteger, transactions: List<TransactionRecord>, onNavigateToPayment: () -> Unit) {
 
     Box(Modifier
         .fillMaxSize()

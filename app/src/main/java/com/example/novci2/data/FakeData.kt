@@ -7,11 +7,11 @@ import com.example.novci2.model.User
 object FakeData {
     val userList = listOf(
         User(
-            "G.", "Jakov", "", "Jaković", balanceCents = 1234567890, ID = 0
+            "G.", "Jakov", "", "Jaković", balanceCents = 1234567890.toBigInteger(), ID = 0
         ),
 
         User(
-            "Gđa", "Petra", "P.", "Petrović", balanceCents = 10088, ID = 1
+            "Gđa", "Petra", "P.", "Petrović", balanceCents = 10088.toBigInteger(), ID = 1
         )
     )
     val transactionHistory = listOf(
